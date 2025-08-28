@@ -26,19 +26,6 @@ This repository provides refactored Python modules derived from three original J
 - `src/lb_egan/train_downstream.py`: Downstream classifier training with fold evaluation and confusion matrices
 - `src/lb_egan/config.py`: Centralized configuration with sane defaults and JSON override support
 
-## Model Usage
-
-Models can now be used independently with custom parameters:
-
-```python
-from lb_egan.models.architectures import Generator, Ensemble_Generator
-
-# Create models with different configurations
-generator_128 = Generator(latent_dim=100, img_size=128, channels=3)
-generator_256 = Generator(latent_dim=200, img_size=256, channels=1)
-ensemble = Ensemble_Generator(latent_dim=100, img_size=128, channels=3)
-```
-
 ## Default paths (inside src)
 
 By default, all paths are set under the `src` tree to make the project self-contained:
@@ -57,8 +44,8 @@ You can change any of these using a JSON config or CLI arguments (CLI always ove
 ```json
 {
   "train_gan": {
-    "ModelId": "AggreGAN_Tapered",
-    "data_path": "src/lb_egan/data/augmented_data_all/02_Tapered",
+    "ModelId": "LB-EGAN_<Constructed Model Class ID>", 
+    "data_path": "src/lb_egan/data/<Constructed Model Class ID>",
     "n_epochs": 20000,
     "batch_size": 256,
     "lr": 0.0002,
