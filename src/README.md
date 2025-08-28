@@ -2,9 +2,9 @@
 
 This repository provides refactored Python modules derived from three original Jupyter notebooks:
 
-- `AggreGAN_Hushem-DCDR.ipynb` → `src/lb_egan/train_gan.py` (GAN training)
-- `Gen_Center_v2.ipynb` → `src/lb_egan/generate_images.py` (image generation with the trained GAN)
-- `TL_BestValuesCompleteTest_HOI-1_4C.ipynb` → `src/lb_egan/train_downstream.py` (train a downstream model using GAN images)
+- `LB-EGAN.ipynb` → `src/lb_egan/train_gan.py` (GAN training)
+- `Image_Generator.ipynb` → `src/lb_egan/generate_images.py` (image generation with the trained GAN)
+- `Classification.ipynb` → `src/lb_egan/train_downstream.py` (train a downstream model using GAN images)
 
 Model architectures are copied verbatim and centralized in `src/lb_egan/models/architectures.py` to preserve behavior (layers, hyperparameters, and internals are unchanged).
 
