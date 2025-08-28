@@ -194,9 +194,6 @@ def main():
 
 	cuda = True if torch.cuda.is_available() else False
 
-	# expose opt to architectures to preserve verbatim constructors
-	architectures.opt = opt_local  # type: ignore
-
 	global Ensemble_Generator
 	global generatorDG, discriminatorDG
 	global generatorDC, discriminatorDC
@@ -204,14 +201,25 @@ def main():
 	global FloatTensor, LongTensor, opt
 
 	opt = opt_local
-	Ensemble_Generator = architectures.Ensemble_Generator()
+	Ensemble_Generator = architectures.Ensemble_Generator(
+		latent_dim=opt.latent_dim,
+		img_size=opt.img_size,
+		channels=opt.channels
+	)
 	if cuda:
 		Ensemble_Generator.cuda()
 
 	lambda_gp = 0.1
 
-	generatorDG = architectures.GeneratorDG()
-	discriminatorDG = architectures.DiscriminatorDG()
+	generatorDG = architectures.GeneratorDG(
+		latent_dim=opt.latent_dim,
+		img_size=opt.img_size,
+		channels=opt.channels
+	)
+	discriminatorDG = architectures.DiscriminatorDG(
+		img_size=opt.img_size,
+		channels=opt.channels
+	)
 	if cuda:
 		generatorDG.cuda()
 		discriminatorDG.cuda()
@@ -222,8 +230,15 @@ def main():
 	generatorDG.apply(weights_init_normal)
 	discriminatorDG.apply(weights_init_normal)
 
-	generatorDC = architectures.GeneratorDC()
-	discriminatorDC = architectures.DiscriminatorDC()
+	generatorDC = architectures.GeneratorDC(
+		latent_dim=opt.latent_dim,
+		img_size=opt.img_size,
+		channels=opt.channels
+	)
+	discriminatorDC = architectures.DiscriminatorDC(
+		img_size=opt.img_size,
+		channels=opt.channels
+	)
 	if cuda:
 		generatorDC.cuda()
 		discriminatorDC.cuda()
