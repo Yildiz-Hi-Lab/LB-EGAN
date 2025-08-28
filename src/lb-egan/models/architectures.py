@@ -1,5 +1,3 @@
-# Verbatim architectures extracted from notebooks
-
 import torch
 import torch.nn as nn
 
