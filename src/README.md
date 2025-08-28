@@ -6,7 +6,12 @@ This repository provides refactored Python modules derived from three original J
 - `Image_Generator.ipynb` → `src/lb_egan/generate_images.py` (image generation with the trained GAN)
 - `Classification.ipynb` → `src/lb_egan/train_downstream.py` (train a downstream model using GAN images)
 
-Model architectures are copied verbatim and centralized in `src/lb_egan/models/architectures.py` to preserve behavior (layers, hyperparameters, and internals are unchanged).
+## Key Improvements
+
+- **Modular Architecture**: Model classes are now parameterized and self-contained, no longer depending on global `opt` objects
+- **Reusable Models**: Models can be instantiated with different parameters and used independently
+- **Clean Separation**: Architecture definitions are separate from training configuration
+- **Easy Testing**: Individual models can be tested without the full training pipeline
 
 ## Installation
 
@@ -15,11 +20,24 @@ Model architectures are copied verbatim and centralized in `src/lb_egan/models/a
 
 ## Package layout
 
-- `src/lb_egan/models/architectures.py`: Verbatim model classes used by the notebooks.
-- `src/lb_egan/train_gan.py`: Training script that reproduces the notebook flow one-to-one.
-- `src/lb_egan/generate_images.py`: Image generation script for creating fold-structured datasets.
-- `src/lb_egan/train_downstream.py`: Downstream classifier training with fold evaluation and confusion matrices.
-- `src/lb_egan/config.py`: Centralized configuration with sane defaults and JSON override support.
+- `src/lb_egan/models/architectures.py`: Parameterized model classes (Generator, Ensemble_Generator, GeneratorDG, DiscriminatorDG, GeneratorDC, DiscriminatorDC)
+- `src/lb_egan/train_gan.py`: Training script that reproduces the notebook flow one-to-one
+- `src/lb_egan/generate_images.py`: Image generation script for creating fold-structured datasets
+- `src/lb_egan/train_downstream.py`: Downstream classifier training with fold evaluation and confusion matrices
+- `src/lb_egan/config.py`: Centralized configuration with sane defaults and JSON override support
+
+## Model Usage
+
+Models can now be used independently with custom parameters:
+
+```python
+from lb_egan.models.architectures import Generator, Ensemble_Generator
+
+# Create models with different configurations
+generator_128 = Generator(latent_dim=100, img_size=128, channels=3)
+generator_256 = Generator(latent_dim=200, img_size=256, channels=1)
+ensemble = Ensemble_Generator(latent_dim=100, img_size=128, channels=3)
+```
 
 ## Default paths (inside src)
 
@@ -39,8 +57,8 @@ You can change any of these using a JSON config or CLI arguments (CLI always ove
 ```json
 {
   "train_gan": {
-    "ModelId": "LB-EGAN_Tapered",
-    "data_path": "src/lb_egan/data/augmented_data/02_Tapered",
+    "ModelId": "AggreGAN_Tapered",
+    "data_path": "src/lb_egan/data/augmented_data_all/02_Tapered",
     "n_epochs": 20000,
     "batch_size": 256,
     "lr": 0.0002,
@@ -104,9 +122,3 @@ Or provide config/overrides:
 ```bash
 python -m lb_egan.train_downstream --config /absolute/path/to/config.json --dataset_path "src/lb_egan/outputs/generate_images"
 ```
-
-## Notes
-
-- The GAN model classes reference `opt` internally as in the original notebook; the scripts assign `architectures.opt` at runtime before model construction to preserve behavior.
-- Execution order and default hyperparameters match the notebooks. Any warnings or prints shown by the notebooks will appear similarly when running the scripts.
-
